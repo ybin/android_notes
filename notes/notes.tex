@@ -1,0 +1,207 @@
+﻿\documentclass{article}
+\input{../styles/preamble}
+
+\definetitle{\tt Android Notes}
+\author{孙延宾}
+\date{\today}
+
+\begin{document}
+  \tt
+  \begin{titlepage}
+    \maketitle
+  \end{titlepage}
+  
+  \part[Commands for Android]{Android命令行工具}
+  \section[aapt - Android Asset Packaging Tool]{aapt命令}
+  使用方法: aapt \textless subcommand\textgreater\ \lt options\gt
+  \subsection[print apk file badging information]{打印apk文件概要信息}
+  aapt dump badging filename.apk
+  
+  apk文件的概括性的信息，主要用来查看versionCode、versionName信息。
+  
+  \subsection[print apk file verbose information]{打印apk文件详细信息}
+  aapt list -a filename.apk
+  
+  输出的信息中包括resource和manifest两方面的内容。manifest文件中的所有信息都被打印出来，
+  包括声明的Activity、Receiver、Service，各种permission、intent-filter以及
+  versionCode、versionName等等，一应俱全。
+  
+  \section[pm - Package Manager]{pm命令}
+  使用方法：pm \lt subcommand\gt\ \lt options\gt
+  
+  \subsection[list packages]{查看设备上的package信息}
+  pm list packages [-f] [-d] [-e] [-s] [-3] FILTER
+  
+  \begin{description}
+    \item[-f:] 显示package name对应的apk file路径
+    \item[-d:] 只显示disabled packages
+    \item[-e:] 只显示enabled packages
+    \item[-s:] 只显示system packages，apk文件位于/system/app/目录
+    \item[-3:] 只显示third party packages，apk文件位于/data/app/目录
+    \item[FILTER:] 过滤器，如字符串"camera"将过滤出包名中包含camera的包
+  \end{description}
+  应用：如何删除不想用的预安装软件呢？
+  \begin{enumerate}
+    \item 在任务管理器中禁用不想用的应用
+    \item adb shell pm list packages -f -d
+    \item 删除2中的apk文件
+  \end{enumerate}
+  应用：使用awk批量删除不想用的预安装应用\\
+  adb shell pm list packages -d | gawk -F : '\{system("adb shell pm uninstall " \$2)\}'
+  
+  
+  \subsection[package file path]{打印apk文件路径}
+  pm path \lt package-name\gt
+  
+  \subsection[enable or disable packages]{启用、禁用app}
+  pm clear \lt package-name\gt
+  
+  清空package的数据信息
+  
+  pm enable \lt package-name\gt
+  
+  启用某个应用
+  
+  pm disable \lt package-name\gt
+  
+  禁用某个应用
+  
+  \subsection[安装应用]{安装应用}
+  pm install [-s] [-f] [-d] [-r] \lt filename.apk\gt
+  \begin{description}
+    \item[-s:] 将应用安装到sdcard上
+    \item[-f:] 将应用安装到内部flash上
+    \item[-d:] 允许降级安装，即安装当前应用的低版本apk
+    \item[-r:] reinstall app，保持应用数据不被删除
+  \end{description}
+  
+  \subsection[卸载应用]{卸载应用}
+  pm uninstall [-k] \lt package-name\gt
+  
+  \begin{description}
+    \item[-k:] 保持应用的data和cache不被删除
+  \end{description}
+  
+  \subsection[查看权限信息]{查看权限信息}
+  pm list permissions [-f] [-s]
+  
+  \begin{description}
+    \item[-f:] 列出所有系统权限信息
+    \item[-s:] 只列出权限的摘要信息
+  \end{description}
+  
+  
+  \section[am - Application Manager]{am命令}
+  am \lt subcommand\gt\ \lt options\gt
+  
+  \subsection[启动Activity]{启动Activity}
+  am start [-D] [-W] [-R \lt count\gt] [-S] \lt intent\gt
+  
+  \begin{description}
+    \item[-D:] 开启debug
+    \item[-W:] wait for launch to complete
+    \item[-R \lt count\gt:] 重复启动count次，每次启动前先结束之前的Activity
+    \item[-S] 强制关闭先前的Activity再启动新的Activity
+  \end{description}
+  
+  \lt intent\gt 有多种形式：
+  
+  \begin{enumerate}
+    \item -a \lt ACTION\gt] [-d \lt DATA\_URI\gt] [-t \lt MIME\_TYPE\gt
+    \item -c \lt CATEGORY\gt\ [-c \lt CATEGORY\gt] ...
+    \item -e|--es \lt EXTRA\_KEY\gt\ \lt EXTRA\_STRING\_VALUE\gt\ ...
+    \item --esn \lt EXTRA\_KEY\gt\ ...
+    \item --ez \lt EXTRA\_KEY\gt\ \lt EXTRA\_BOOLEAN\_VALUE\gt\ ...
+    \item --ei \lt EXTRA\_KEY\gt\ \lt EXTRA\_INT\_VALUE\gt\ ...
+    \item --el \lt EXTRA\_KEY\gt\ \lt EXTRA\_LONG\_VALUE\gt\ ...
+    \item --ef \lt EXTRA\_KEY\gt\ \lt EXTRA\_FLOAT\_VALUE\gt\ ...
+    \item --eu \lt EXTRA\_KEY\gt\ \lt EXTRA\_URI\_VALUE\gt\ ...
+    \item --ecn \lt EXTRA\_KEY\gt\ \lt EXTRA\_COMPONENT\_NAME\_VALUE\gt
+    \item --eia \lt EXTRA\_KEY\gt\ \lt EXTRA\_INT\_VALUE\gt [,\lt EXTRA\_INT\_VALUE...]
+    \item --ela \lt EXTRA\_KEY\gt\ \lt EXTRA\_LONG\_VALUE\gt[,\lt EXTRA\_LONG\_VALUE...]
+    \item --efa \lt EXTRA\_KEY\gt\ \lt EXTRA\_FLOAT\_VALUE\gt[,\lt EXTRA\_FLOAT\_VALUE...]
+    \item -n \lt COMPONENT\gt] [-f \lt FLAGS\gt
+    \item --grant-read-uri-permission] [--grant-write-uri-permission]
+    \item --debug-log-resolution] [--exclude-stopped-packages]
+    \item --include-stopped-packages]
+    \item --activity-brought-to-front] [--activity-clear-top]
+    \item --activity-clear-when-task-reset] [--activity-exclude-from-recents]
+    \item --activity-launched-from-history] [--activity-multiple-task]
+    \item --activity-no-animation] [--activity-no-history]
+    \item --activity-no-user-action] [--activity-previous-is-top]
+    \item --activity-reorder-to-front] [--activity-reset-task-if-needed]
+    \item --activity-single-top] [--activity-clear-task]
+    \item --activity-task-on-home
+    \item --receiver-registered-only] [--receiver-replace-pending]
+    \item --selector
+    \item \lt URI\gt\ | \lt PACKAGE\gt\ | \lt COMPONENT\gt
+  \end{enumerate}
+  
+  \subsubsection[通过package name启动应用]{通过package name启动应用}
+  am start -n \lt package-name\gt/\lt package-name.activity-name\gt
+  
+  如：am start -n zte.com.cn.camera/zte.com.cn.camera.Camera\\
+  可以简写为：\\
+  am start -n zte.com.cn.camera/.Camera
+  
+  \subsubsection[通过Intent启动应用]{通过Intent启动应用}
+  am start -a android.intent.action.CALL -d tel:10086
+  
+  \subsection[启动Service]{启动Service}
+  am startservice \lt intent\gt
+  
+  \subsection[关闭应用]{关闭应用}
+  am force-stop \lt package-name\gt
+  
+  \subsection[发送广播]{发送广播}
+  am broadcast \lt intent\gt
+  
+  \subsection[dump heap]{dump heap}
+  am dumpheap \lt process\gt \lt file\gt
+  
+  \begin{description}
+    \item[process:] 可以是pid，也可以是进程名称（一般为package name）
+    \item[file:] 设备上的文件路径
+  \end{description}
+  如：am dumpheap zte.com.cn.camera /sdcard/camera.hprof
+  
+  \subsection[监视系统运行]{监视系统运行}
+  am monitor
+  
+  启动、恢复app时都会有相应的package name打印。此方法可以很快得知设备上某个应用的package name.
+  
+  \subsection[设置设备的显示尺寸、显示密度]{设置设备的显示尺寸、显示密度}
+  am display-size [reset|WxH]
+  
+  am display-density [reset|density]
+  
+  其中，WxH、density均为数值。
+  
+  \part[Android Notes List]{Android笔记列表}
+  \section[关于package的UID]{关于package的UID}
+  在安装apk时，android为application分配一个uid，每个app一个uid，除非使用sharedUid。
+	uid不会随着app的启动、关闭而改变，而且重新安装似乎不会改变uid. 但是文档声明只保证
+	app在device上时uid不变，如果没有package使用某个uid，该uid将会被删掉。
+	查看app的uid有两个方法：
+  \begin{enumerate}
+    \item 查看系统的packages.xml文件（/data/system/packages.xml），从中找到app对应的package name，
+		      其中便有app的uid
+    \item 运行app，使用top/ps命令找到对应的pid，然后到/proc目录下查看该进程的信息：\\
+      		cat /proc/\lt pid\gt/status
+  \end{enumerate}
+  
+  \section[Activity的noHistory属性]{Activity的noHistory属性}
+  android:noHistory="true"
+  
+  该属性置为true时，当Activity A被别的Activity B覆盖时，该Activity A会退出，
+  而无法从B返回A，也就是说A不会成为Activity Stack上的“历史”Activity。
+  如A正在运行，此时来电，phone结束后，A finish()，但是如果A正在运行，用户按HOME键，
+  A不会finish()，因为此时A仍在栈顶。
+  
+  \section[onUserLeaverHint()]{onUserLeaverHint()}
+  onUserLeaverHint()函数用于提示系统当用户离开之后该怎么做。
+  举例来说：当app正在运行，此时来电，app的onPause()被执行；但是，当HOME键被按下时，
+  系统会先调用onUserLeaverHint()，然后再调用onPause()，可以在该中调用finish()，
+  达到HOME键退出的目的。
+  
+\end{document}

@@ -1,0 +1,45 @@
+﻿
+%%% xeCJK
+\usepackage{xeCJK}
+\setCJKmainfont{方正细圆简体}
+\setCJKsansfont{方正细圆简体}
+\setCJKmonofont{新宋体}
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip=0pt plus 1pt minus 0.1pt
+
+\usepackage{xcolor}
+\usepackage{lastpage}
+
+%%% get total page number
+%\usepackage{lastpage}
+
+%%% geometry
+\usepackage[includehead,includefoot,hmargin=21mm,vmargin=10.5mm]{geometry}
+
+%%% fancyhdr
+\usepackage{fancyhdr}
+\pagestyle{fancy} % use fancyhdr
+\fancyhead{} % clear header
+%\fancyhead[L]{Lhead}
+\fancyhead[C]{}
+%\fancyhead[R]{Rhead}
+\fancyfoot{} % clear footer
+%\fancyfoot[L]{Lfoot}
+\fancyfoot[C]{\thepage/\pageref*{LastPage}}
+%\fancyfoot[R]{Rfoot}
+\renewcommand{\headrulewidth}{0.4pt} % header line
+\renewcommand{\footrulewidth}{0.4pt} % footer line
+
+\usepackage{hyperref}
+
+%%% perfect source code display
+\usepackage[section]{minted}
+%\usemintedstyle{colorful}
+
+%%%
+\providecommand\commanddonothing{}
+\setlength{\parindent}{0pt}
+\def\definetitle#1{\title{#1}\fancyhead[C]{#1}}
+\renewcommand{\today}{\number\month 月 \number\day 日, ~\number\year 年}
+\def\lt{\textless}
+\def\gt{\textgreater}
