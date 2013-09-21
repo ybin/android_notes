@@ -1,9 +1,9 @@
 ﻿
 %%% xeCJK
 \usepackage{xeCJK}
-\setCJKmainfont{方正细圆简体}
-\setCJKsansfont{方正细圆简体}
-\setCJKmonofont{新宋体}
+\setCJKmainfont[BoldFont=Adobe Heiti Std]{Adobe Song Std}
+\setCJKsansfont[BoldFont=Adobe Heiti Std]{Adobe Song Std}
+\setCJKmonofont[BoldFont=Adobe Heiti Std]{Adobe Song Std}
 \XeTeXlinebreaklocale "zh"
 \XeTeXlinebreakskip=0pt plus 1pt minus 0.1pt
 
@@ -15,6 +15,7 @@
 
 %%% geometry
 \usepackage[includehead,includefoot,hmargin=21mm,vmargin=10.5mm]{geometry}
+%\usepackage[includehead,includefoot,hmargin=1.2in,vmargin=1in]{geometry}
 
 %%% fancyhdr
 \usepackage{fancyhdr}
@@ -29,6 +30,12 @@
 %\fancyfoot[R]{Rfoot}
 \renewcommand{\headrulewidth}{0.4pt} % header line
 \renewcommand{\footrulewidth}{0.4pt} % footer line
+
+\usepackage{titlesec}
+\titleformat{\part}{\centering\Large\bfseries}{第\,\thepart\,部分}{1em}{}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
 
 \usepackage{hyperref}
 

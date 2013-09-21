@@ -1,4 +1,4 @@
-﻿\documentclass{article}
+﻿\documentclass[a4paper,10pt]{article}
 \input{../styles/preamble}
 
 \definetitle{\tt Android Notes}
@@ -92,7 +92,7 @@
 
 
   \section[am - Application Manager]{am命令}
-  am \lt subcommand\gt\ \lt options\gt
+  使用方法：am \lt subcommand\gt\ \lt options\gt
 
   \subsection[启动Activity]{启动Activity}
   am start [-D] [-W] [-R \lt count\gt] [-S] \lt intent\gt
@@ -150,7 +150,7 @@
   \subsection[启动Service]{启动Service}
   am startservice \lt intent\gt
 
-  \subsection[关闭应用]{关闭应用}
+  \subsection[关闭应用]{\underline{关闭应用}}
   am force-stop \lt package-name\gt
 
   \subsection[发送广播]{发送广播}
@@ -203,7 +203,7 @@
   举例来说：当app正在运行，此时来电，app的onPause()被执行；但是，当HOME键被按下时，
   系统会先调用onUserLeaveHint()，然后再调用onPause()，可以在该中调用finish()，
   达到HOME键退出的目的。
-  
+
   \section[通过Intent监视SCREEN\_ON、SCREEN\_OFF动作]{通过Intent监视SCREEN\_ON、SCREEN\_OFF动作}
   这里要做的事情是：
   \begin{enumerate}
@@ -214,22 +214,22 @@
   \end{enumerate}
   \subsection[定义Broadcast receiver接收Intent]{定义Broadcast receiver接收Intent}
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{ScreenBroadcastReceiver.java}
-  
+
   \subsection[在Manifest文件中声明receiver]{在Manifest文件中声明receiver}
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{xml}{AndroidManifest.xml}
-    
+
   \subsection[使用service注册receiver]{使用service注册receiver}
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{ReceiverService.java}
-  
+
   \subsection[启动Service的桌面应用]{启动Service的桌面应用}
   \mint[bgcolor=srcbg]{java}|startService(new Intent(this, ReceiverService.class));|
-  
-  
+
+
   \section[如何在代码中设置View/ViewGroup的尺寸]{如何在代码中设置View/ViewGroup的尺寸}
   在代码中动态设置View的尺寸是很常见的，比如横竖屏切换时，为了保持视频画面的尺寸，
   就需要重新设置SurfaceView/TextureView/VideoView的尺寸。设置的方法是使用LayoutParams类，
   LayoutParams类有多种，这里使用的必须是：该View的父类的LayoutParams类。
-  
+
 \begin{minted}[linenos,tabsize=4,bgcolor=srcbg]{java}
 LayoutParams lp = mSurfaceView.getLayoutParams();
 lp.width = frameWidth;
@@ -242,7 +242,7 @@ mSurfaceView.requestLayout();
   定义不同LayoutParams种类。不过，应该首先尝试getLayoutParams()，因为重新定义的
   LayoutParams对象需要重新设置其他信息，比如对齐方式等，而get出来的对象都已经设置好了
   (在XML文件中)。
-  
+
   \section[捕获所有物理按键事件]{捕获所有物理按键事件}
   \begin{minted}[linenos,tabsize=4,bgcolor=srcbg]{java}
 @Override
@@ -256,7 +256,7 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
     }
 }
   \end{minted}
-  
+
   \section[keep\_screen\_on]{keep\_screen\_on}
   \begin{minted}[linenos,tabsize=4,bgcolor=srcbg]{java}
 private void keepScreenOn(boolean on) {
@@ -267,7 +267,7 @@ private void keepScreenOn(boolean on) {
     }
 }
   \end{minted}
-  
+
   \section[获取屏幕物理尺寸]{获取屏幕物理尺寸}
   \begin{minted}[linenos,tabsize=4,bgcolor=srcbg]{java}
 private void getScreenSize() {
@@ -277,7 +277,7 @@ private void getScreenSize() {
     mScreenHeight = mDisplayMetrics.heightPixels;
 }
   \end{minted}
-  
+
   \section[使系统静音]{使系统静音}
   \begin{minted}[linenos,tabsize=4,bgcolor=srcbg]{java}
 private void muteMusicStream(boolean mute) {
@@ -288,8 +288,8 @@ private void muteMusicStream(boolean mute) {
     }
 }
   \end{minted}
-  
-  \section[使用渐变背景色模拟动画]{使用渐变背景色模拟动画}
+
+  \section[使用渐变背景色模拟动画]{\underline{使用渐变背景色模拟动画}}
   \begin{minted}[linenos,tabsize=4,bgcolor=srcbg]{java}
 mPreviewButton = (LinearLayout) findViewById(R.id.footer);
 mPreviewButton.setOnClickListener(new OnClickListener() {
@@ -301,9 +301,9 @@ mPreviewButton.setOnClickListener(new OnClickListener() {
     }
 });
   \end{minted}
-  
+
   R.drawable.footer\_transition的定义如下：
-  
+
   \begin{minted}[linenos,tabsize=4,bgcolor=srcbg]{xml}
 <!-- drawable/footer_transition.xml -->
 <?xml version="1.0" encoding="utf-8"?>
@@ -312,5 +312,7 @@ mPreviewButton.setOnClickListener(new OnClickListener() {
     <item android:drawable="@color/footer_background_color" />
 </transition>
   \end{minted}
+
+%\meaning\part
 
 \end{document}
