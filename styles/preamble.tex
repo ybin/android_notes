@@ -38,6 +38,8 @@
 \renewcommand{\today}{\number\month 月 \number\day 日, ~\number\year 年}
 \def\lt{\textless}
 \def\gt{\textgreater}
+\renewcommand\contentsname{\bfseries 目~~录}
+
 
 %%% geometry
 \usepackage[includehead,includefoot,hmargin=21mm,vmargin=10.5mm,
@@ -66,6 +68,8 @@
 \titleformat{\part}{\centering\Large\bfseries}{第\,\thepart\,部分}{1em}{}
 \titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+%\titlespacing*{章节命令}{左边距}{上文距}{下文距}[右边距]
+\titlespacing*{\section}{0pt}{2\baselineskip}{\parsep}
 
 
 \usepackage{hyperref}
