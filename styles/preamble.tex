@@ -8,28 +8,59 @@
 \XeTeXlinebreakskip=0pt plus 1pt minus 0.1pt
 
 \usepackage{xcolor}
-\usepackage{lastpage}
 
 %%% get total page number
-%\usepackage{lastpage}
+\usepackage{lastpage}
+
+%%% customized definition
+\makeatletter
+\def\sybtitle#1{\def\@sybtitle{#1}}
+\def\sybauthor#1{\def\@sybauthor{#1}}
+\def\sybdate#1{\def\@sybdate{#1}}
+\sybtitle{}
+\sybauthor{}
+\sybdate{}
+\def\sybmaketitle{
+  \begin{center}
+  \vspace*{.8in}
+  {\huge\bfseries\@sybtitle}
+  \par
+  \vspace{.8in}
+  {\Large\@sybauthor}
+  \par
+  \vspace{.2in}
+  \@sybdate
+  \vspace{.5in}
+  \end{center}
+}
+\makeatother
+\setlength{\parindent}{0pt}
+\renewcommand{\today}{\number\month 月 \number\day 日, ~\number\year 年}
+\def\lt{\textless}
+\def\gt{\textgreater}
 
 %%% geometry
-\usepackage[includehead,includefoot,hmargin=21mm,vmargin=10.5mm]{geometry}
+\usepackage[includehead,includefoot,hmargin=21mm,vmargin=10.5mm,
+            headsep=12pt,headheight=25pt]{geometry}
 %\usepackage[includehead,includefoot,hmargin=1.2in,vmargin=1in]{geometry}
 
 %%% fancyhdr
 \usepackage{fancyhdr}
-\pagestyle{fancy} % use fancyhdr
-\fancyhead{} % clear header
-%\fancyhead[L]{Lhead}
-\fancyhead[C]{}
-%\fancyhead[R]{Rhead}
-\fancyfoot{} % clear footer
-%\fancyfoot[L]{Lfoot}
-\fancyfoot[C]{\thepage/\pageref*{LastPage}}
-%\fancyfoot[R]{Rfoot}
-\renewcommand{\headrulewidth}{0.4pt} % header line
-\renewcommand{\footrulewidth}{0.4pt} % footer line
+\makeatletter
+\fancypagestyle{main} {
+  \fancyhf{} % clear header & footer
+  \fancyhead[C]{\bfseries\@sybtitle}
+  \fancyfoot[C]{\thepage/\pageref*{LastPage}}
+  \renewcommand{\headrulewidth}{0.4pt} % header line
+  \renewcommand{\footrulewidth}{0.4pt} % footer line
+}
+\fancypagestyle{header} {
+  \fancyhf{} % clear header & footer
+  \fancyfoot[C]{\Roman{page}}
+  \renewcommand{\headrulewidth}{0pt} % header line
+  \renewcommand{\footrulewidth}{0pt} % footer line
+}
+\makeatother
 
 \usepackage{titlesec}
 \titleformat{\part}{\centering\Large\bfseries}{第\,\thepart\,部分}{1em}{}
@@ -44,10 +75,3 @@
 %\usemintedstyle{colorful}
 \definecolor{srcbg}{rgb}{0.95,0.95,0.95}
 
-%%%
-\providecommand\commanddonothing{}
-\setlength{\parindent}{0pt}
-\def\definetitle#1{\title{#1}\fancyhead[C]{#1}}
-\renewcommand{\today}{\number\month 月 \number\day 日, ~\number\year 年}
-\def\lt{\textless}
-\def\gt{\textgreater}

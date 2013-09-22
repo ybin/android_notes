@@ -1,16 +1,24 @@
-﻿\documentclass[a4paper,10pt]{article}
+﻿\documentclass[a4paper,11pt]{article}
+
 \input{../styles/preamble}
 
-\definetitle{\tt Android Notes}
-\author{孙延宾}
-\date{\today}
-
+\sybtitle{Android Notes}
+\sybauthor{孙延宾}
+\sybdate{\today}
+  
 \begin{document}
-  \tt
-  \begin{titlepage}
-    \maketitle
-  \end{titlepage}
+  \tt % I love Typewriter font.
 
+%%%%%%%% the title page and toc %%%%%%%%%%
+  \pagestyle{header}
+  \sybmaketitle
+  \tableofcontents
+  \newpage
+
+%%%%%%% the main content %%%%%%%%%
+  \pagestyle{main}
+  \setcounter{page}{1}
+  
   \part[Commands for Android]{Android命令行工具}
   \section[aapt - Android Asset Packaging Tool]{aapt命令}
   使用方法: aapt \textless subcommand\textgreater\ \lt options\gt
@@ -213,7 +221,7 @@
     \item 播放视频文件(keep\_screen\_on)
   \end{enumerate}
   \subsection[定义Broadcast receiver接收Intent]{定义Broadcast receiver接收Intent}
-  \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{ScreenBroadcastReceiver.java}
+  \inputminted[linenos,tabsize=4,bgcolor=srcbg,fontsize=\small]{java}{ScreenBroadcastReceiver.java}
 
   \subsection[在Manifest文件中声明receiver]{在Manifest文件中声明receiver}
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{xml}{AndroidManifest.xml}
@@ -314,5 +322,7 @@ mPreviewButton.setOnClickListener(new OnClickListener() {
   \end{minted}
 
 %\meaning\part
+%\the\headsep
+%\the\headheight
 
 \end{document}
