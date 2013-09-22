@@ -325,4 +325,21 @@ mPreviewButton.setOnClickListener(new OnClickListener() {
 %\the\headsep
 %\the\headheight
 
+  \section[Activity的启动模式]{Activity的启动模式}
+  android:launchMode变量，它与Intent的FLAG\_ACTIVITY\_*变量共同作用，决定如何启动Activity来处理Intent。
+  
+  \begin{description}
+    \item[``standard'':] 一个Intent调起一个Activity实例来响应它，一一对应；
+    \item[``singleTop'':] 一个Intent调起一个Activity实例，除非它恰好位于Task Stack顶部；
+    \item[``singleTask'':] Activity只存在于Task Stack的栈底，该栈中允许有其他Activity；
+    \item[``singleInstance'':] Activity实例“独占”一个Task Stack。
+  \end{description}
+  
+  四个值分为两组：
+  
+  \begin{description}
+    \item[``standard''、``singleTop'':] Activity可以有多个实例，而且可以处于多个Task Stack中；
+    \item[``singleTask''、``singleInstance'':] Activity只有一个实例，而且都处于Task Stack底部。
+  \end{description}
+
 \end{document}
