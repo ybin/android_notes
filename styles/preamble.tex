@@ -1,4 +1,10 @@
 ﻿
+%%% fontenc
+%\usepackage{fontspec,xunicode,xltxtra}
+%\setmainfont{Times New Roman}
+%\setsansfont{Source Sans Pro}
+%\setmonofont{Source Sans Pro}
+
 %%% xeCJK
 \usepackage{xeCJK}
 \setCJKmainfont[BoldFont=Adobe Heiti Std]{Adobe Song Std}
@@ -39,6 +45,8 @@
 \def\lt{\textless}
 \def\gt{\textgreater}
 \renewcommand\contentsname{\bfseries 目~~录}
+\newcommand\bs{\texttt{\symbol{'134}}} % input backslash sign
+\long\def\cmd#1{\par\vspace{1em}\hspace*{6ex}#1\vspace{1em}\par}
 
 
 %%% geometry
@@ -78,4 +86,9 @@
 \usepackage{minted}
 %\usemintedstyle{colorful}
 \definecolor{srcbg}{rgb}{0.95,0.95,0.95}
+\newminted{java}{linenos,tabsize=4,bgcolor=srcbg}
+\newminted{xml}{linenos,tabsize=4,bgcolor=srcbg}
+\newminted{cpp}{linenos,tabsize=4,bgcolor=srcbg}
+\newminted{bash}{linenos,tabsize=4,bgcolor=srcbg}
+\newminted{latex}{linenos,tabsize=4,bgcolor=srcbg}
 
