@@ -207,10 +207,10 @@
   而无法从B返回A，也就是说A不会成为Activity Stack上的“历史”Activity。
   如A正在运行，此时来电，phone结束后，A finish()，但是如果A正在运行，用户按HOME键，
   A不会finish()，因为此时A仍在栈顶。
-  
+
   \subsection[process属性]{process属性}
   process属性可以用在所有的组件(component)中，用来重新命名组件运行的进程名称(进程名称默认为package name)，
-  如果process属性值以冒号(:)开头，则组件将在新的进程中运行，该进程为application的私有进程。\par  
+  如果process属性值以冒号(:)开头，则组件将在新的进程中运行，该进程为application的私有进程。\par
   \begin{bashcode}
 u0_a82    9981  1821  540268 71520 ffffffff 4006e25f S com.example.aidldemo
 u0_a82    9995  1821  512052 45268 ffffffff 4006e25f S com.example.aidldemo:Service
@@ -351,13 +351,13 @@ mPreviewButton.setOnClickListener(new OnClickListener() {
     \item[``standard''、``singleTop'':] Activity可以有多个实例，而且可以处于多个Task Stack中；
     \item[``singleTask''、``singleInstance'':] Activity只有一个实例，而且都处于Task Stack底部。
   \end{description}
-  
-  
+
+
   \section[AIDL的使用方法]{AIDL的使用方法}
   所有的代码均在Eclipse环境下运行。\par\bigskip
   AndroidManifest文件：\par
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{xml}{AIDLManifest.xml}
-  
+
   \subsection[Server端代码]{Server端代码}
   AIDL service的aidl文件：\par
   \begin{javacode}
@@ -371,26 +371,48 @@ interface IAIDLServerService {
     Book getBook();
 }
   \end{javacode}
-  
+
   Book类的aidl文件：\par
   \begin{javacode}
 /* IBook.aidl */
 parcelable Book;
   \end{javacode}
-  
+
   Service代码：\par
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{AIDLServerService.java}
-  
+
   Book类代码：\par
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{Book.java}
-  
+
   \subsection[Client端代码]{Client端代码}
   Client端代码，结果将在Logcat中打印出来：\par
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{ClientActivity.java}
-  
+
   \subsection[输出结果]{输出结果}
   \begin{bashcode}
 D/ClientActivity(10184): book name: Android Notes, book price: 42
   \end{bashcode}
+  
+  \section[通过Intent传递对象]{通过Intent传递对象}
+  Intent发送端：\par
+  \begin{javacode}
+Intent intent = new Intent(this, ReceiveActivity.class);
+Bundle bundle = new Bundle();
+bundle.putParcelable("book_info", new Book("Android APP Dev", 42));
+intent.putExtras(bundle);
+
+startActivity(intent);
+  \end{javacode}
+  
+  接收端：\par
+  \begin{javacode}
+Intent intent = getIntent();
+Bundle bundle = intent.getExtras();
+Book book = (Book) bundle.getParcelable("book_info");
+book.print();
+  \end{javacode}
+  
+  Book类的定义：\par
+  \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{ParcableBook.java}
 
 \end{document}
