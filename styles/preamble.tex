@@ -46,7 +46,10 @@
 \def\gt{\textgreater}
 \renewcommand\contentsname{\bfseries 目~~录}
 \newcommand\bs{\texttt{\symbol{'134}}} % input backslash sign
+%\newcommand\bs{\string\} % same as above definition
 \long\def\cmd#1{\par\vspace{1em}\hspace*{6ex}#1\vspace{1em}\par}
+\def\cstr#1{\texttt{\string#1}} % e.g. \cstr{\latex}
+\long\def\runcode#1{\par\bigskip#1\bigskip\par}
 
 
 %%% geometry
