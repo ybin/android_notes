@@ -14,6 +14,7 @@
 \XeTeXlinebreakskip=0pt plus 1pt minus 0.1pt
 
 \usepackage{xcolor}
+\usepackage{graphicx}
 
 %%% get total page number
 \usepackage{lastpage}
@@ -51,6 +52,16 @@
 \def\cstr#1{\texttt{\string#1}} % e.g. \cstr{\latex}
 \long\def\runcode#1{\par\bigskip#1\bigskip\par}
 
+%%% change background color & add frame for enumerate enviroment
+\usepackage{mdframed}
+\newmdenv[backgroundcolor=blue!10]{coloredframe}
+\newenvironment{coloredenumerate}{
+  \begin{coloredframe}
+  \begin{enumerate}
+}{
+  \end{enumerate}
+  \end{coloredframe}
+}
 
 %%% geometry
 \usepackage[includehead,includefoot,hmargin=21mm,vmargin=10.5mm,

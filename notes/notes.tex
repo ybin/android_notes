@@ -49,11 +49,11 @@
     \item[FILTER:] 过滤器，如字符串"camera"将过滤出包名中包含camera的包
   \end{description}
   应用：如何删除不想用的预安装软件呢？
-  \begin{enumerate}
+  \begin{coloredenumerate}
     \item 在任务管理器中禁用不想用的应用
     \item adb shell pm list packages -f -d
     \item 删除2中的apk文件
-  \end{enumerate}
+  \end{coloredenumerate}
   应用：使用awk批量删除不想用的预安装应用\\
   adb shell pm list packages -d | gawk -F : '\{system("adb shell pm uninstall " \$2)\}'
 
@@ -114,7 +114,7 @@
 
   \lt intent\gt 有多种形式：
 
-  \begin{enumerate}
+  \begin{coloredenumerate}
     \item -a \lt ACTION\gt] [-d \lt DATA\_URI\gt] [-t \lt MIME\_TYPE\gt
     \item -c \lt CATEGORY\gt\ [-c \lt CATEGORY\gt] ...
     \item -e|--es \lt EXTRA\_KEY\gt\ \lt EXTRA\_STRING\_VALUE\gt\ ...
@@ -143,7 +143,7 @@
     \item --receiver-registered-only] [--receiver-replace-pending]
     \item --selector
     \item \lt URI\gt\ | \lt PACKAGE\gt\ | \lt COMPONENT\gt
-  \end{enumerate}
+  \end{coloredenumerate}
 
   \subsubsection[通过package name启动应用]{通过package name启动应用}
   am start -n \lt package-name\gt/\lt package-name.activity-name\gt
@@ -191,12 +191,12 @@
 	uid不会随着app的启动、关闭而改变，而且重新安装似乎不会改变uid. 但是文档声明只保证
 	app在device上时uid不变，如果没有package使用某个uid，该uid将会被删掉。
 	查看app的uid有两个方法：
-  \begin{enumerate}
+  \begin{coloredenumerate}
     \item 查看系统的packages.xml文件（/data/system/packages.xml），从中找到app对应的package name，
 		      其中便有app的uid
     \item 运行app，使用top/ps命令找到对应的pid，然后到/proc目录下查看该进程的信息：\\
       		cat /proc/\lt pid\gt/status
-  \end{enumerate}
+  \end{coloredenumerate}
 
 
   \section[Manifest文件中的属性]{Manifest文件中的属性}
@@ -215,6 +215,13 @@
 u0_a82    9981  1821  540268 71520 ffffffff 4006e25f S com.example.aidldemo
 u0_a82    9995  1821  512052 45268 ffffffff 4006e25f S com.example.aidldemo:Service
   \end{bashcode}
+  
+  \subsection[exported属性]{exported属性}
+  表明组件是否为私有组件，及外部组件是否可以调用该组件。
+  \begin{description}
+    \item[true:] 该组件为公开的，外部组件可以调用该组件。
+    \item[false:] 该组件为私有的，外部无法看到该组件，即使该组件声明了intent-filter也无能为力。
+  \end{description}
 
   \section[onUserLeaveHint()]{onUserLeaveHint()}
   onUserLeaveHint()函数用于提示系统当用户离开之后该怎么做。
@@ -224,12 +231,12 @@ u0_a82    9995  1821  512052 45268 ffffffff 4006e25f S com.example.aidldemo:Serv
 
   \section[通过Intent监视SCREEN\_ON、SCREEN\_OFF动作]{通过Intent监视SCREEN\_ON、SCREEN\_OFF动作}
   这里要做的事情是：
-  \begin{enumerate}
+  \begin{coloredenumerate}
     \item 接收SCREEN\_OFF系统消息
     \item 点亮屏幕
     \item 接收SCREEN\_ON系统消息
     \item 播放视频文件(keep\_screen\_on)
-  \end{enumerate}
+  \end{coloredenumerate}
   \subsection[定义Broadcast receiver接收Intent]{定义Broadcast receiver接收Intent}
   \inputminted[linenos,tabsize=4,bgcolor=srcbg,fontsize=\small]{java}{ScreenBroadcastReceiver.java}
 
@@ -353,12 +360,113 @@ mPreviewButton.setOnClickListener(new OnClickListener() {
   \end{description}
 
 
-  \section[AIDL的使用方法]{AIDL的使用方法}
+  \section[通过Intent传递对象]{通过Intent传递对象}
+  Intent发送端：\par
+  \begin{javacode}
+Intent intent = new Intent(this, ReceiveActivity.class);
+Bundle bundle = new Bundle();
+bundle.putParcelable("book_info", new Book("Android APP Dev", 42));
+intent.putExtras(bundle);
+
+startActivity(intent);
+  \end{javacode}
+
+  接收端：\par
+  \begin{javacode}
+Intent intent = getIntent();
+Bundle bundle = intent.getExtras();
+Book book = (Book) bundle.getParcelable("book_info");
+book.print();
+  \end{javacode}
+
+  Book类的定义：\par
+  \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{ParcableBook.java}
+
+
+  \section[Service组件]{Service组件}
+  Service --- Android四大组件之一。
+  
+  \subsection[Service的分类]{Service的分类}
+  Service分为两类：\par
+  \begin{description}
+    \item[Started Service:] 通过调用startService()接口启动的Service。这种Service将“无限期”运行在后台，
+                            有两种方法可以结束它：在执行过程中调用stopSelf()结束自己、别的组件调用stopService() 结束它。
+    \item[Bound Service:] 通过调用bindService()接口启动的Service。在工作完成时，调用者应该调用unBindService()
+                          解除绑定。没有任何绑定时，Service将自行被系统销毁。
+  \end{description}
+  
+  \subsection[Service basic interface]{Service basic interface}
+  \begin{coloredenumerate}
+    \item onStartCommand(): 当调用startService()时，系统将会调用到该接口，它与Started Service对应。
+    \item onBind(): 当调用bindService()时，系统将会调用到该接口，它是Bound Service的启动接口。
+    \item onCreate(): Service生命周期的开始，无论哪种Service，启动时都会调用该接口。
+    \item onDestroy(): Service生命周期的结束，无论哪种Service，结束时都会调用到该接口。
+  \end{coloredenumerate}
+  
+  由于started Service有可能无限期运行，所以系统资源紧张时会被kill掉，此时就需要onStartCommand()以返回值
+  的形式告知系统，当Service被kill的时候，系统应该如何处理它。返回值有以下几种：\par
+  \begin{coloredenumerate}
+    \item START\_NOT\_STICKY: Service被kill掉之后，不要重新启动它，除非有Intent提交请求，推荐！
+    \item START\_STICKY: Service被kill之后重新启动它，但是不要传递最后一个Intent。
+    \item START\_REDELIVER\_INTENT: Service被kill之后，重新启动它并传递最后一个Intent给它。
+  \end{coloredenumerate}
+  
+  \subsection[Started Service分类]{Started Service分类}
+  Started Service分类两类：\par
+  \begin{coloredenumerate}
+    \item IntentService: 该类Service启动一个worker线程“逐个”、“顺序”处理所有的start请求。
+    \item 直接继承Service类，一般用于启动多线程并发处理start请求的情况。
+  \end{coloredenumerate}
+  
+  \subsection[Bound Service分类]{Bound Service分类}
+  Bound Service允许其他组件绑定到它上面并与之交互，该service必须实现onBind()函数，并返回
+  一个IBinder对象，该对象是Client与Service交互的接口。多个Client可以同时绑定到Service上。
+  实现Bound Service的关键是实现IBinder对象，根据创建IBinder对象的方式可以分为
+  以下几类Bound Service：\par
+  \begin{coloredenumerate}
+    \item 继承IBinder类：Service是app的私有组件并且与Client运行在相同的进程中。
+    \item 使用Messenger：Service与Client不在同一个进程中，使用Messenger实现进程间通信，
+          Messenger会将多个线程的请求统一到一个消息队列中，供Service逐个处理，所以
+          不用考虑Service执行代码的线程安全与否。
+    \item 使用AIDL：如果希望Service能够“同时”处理多个请求，可以直接使用AIDL，此时
+          Service执行代码必须是多线程的，而且要做到线程安全性。事实上，Messenger的
+          底层正是AIDL。
+  \end{coloredenumerate}
+  Bound Service将放到单独的notes条目中讲解。  
+  
+  \subsection[Service的生命周期]{Service的生命周期}
+  \begin{figure}[ht]
+    \centering
+    \includegraphics[width=.7\textwidth]{life_cycle_of_service.png}\\
+    \caption{Life cycle of Service}\label{fig:service}
+  \end{figure}
+  详细内容见图 \ref{fig:service}
+  
+  \subsection[Service v.s. Thread]{Service v.s. Thread}
+  如果想要在UI线程以外执行任务，并且该任务只在用户与应用程序交互的过程中执行，
+  那么应该创建线程而非Service。
+  
+  \subsection[service默认运行在UI线程]{service默认运行在UI线程}
+  这一点是如此重要，以至于用一个单独的subsection来记录它。
+  
+  \section[Bound Service]{Bound Service}
+  实现Bound Service的关键是：IBinder接口。
+  \subsection[使用IBinder]{使用IBinder}
+  \subsubsection[Service端代码]{Service端代码}
+  \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{LocalService.java}
+  
+  \subsubsection[Client端代码]{Client端代码}
+  \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{BindingActivity.java}
+  
+  \subsection[使用Messenger]{使用Messenger}
+  略。
+
+  \subsection[AIDL的使用方法]{AIDL的使用方法}
   所有的代码均在Eclipse环境下运行。\par\bigskip
   AndroidManifest文件：\par
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{xml}{AIDLManifest.xml}
 
-  \subsection[Server端代码]{Server端代码}
+  \subsubsection[Server端代码]{Server端代码}
   AIDL service的aidl文件：\par
   \begin{javacode}
 /* IAIDLServerService.aidl */
@@ -384,35 +492,13 @@ parcelable Book;
   Book类代码：\par
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{Book.java}
 
-  \subsection[Client端代码]{Client端代码}
+  \subsubsection[Client端代码]{Client端代码}
   Client端代码，结果将在Logcat中打印出来：\par
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{ClientActivity.java}
 
-  \subsection[输出结果]{输出结果}
+  \subsubsection[输出结果]{输出结果}
   \begin{bashcode}
 D/ClientActivity(10184): book name: Android Notes, book price: 42
   \end{bashcode}
   
-  \section[通过Intent传递对象]{通过Intent传递对象}
-  Intent发送端：\par
-  \begin{javacode}
-Intent intent = new Intent(this, ReceiveActivity.class);
-Bundle bundle = new Bundle();
-bundle.putParcelable("book_info", new Book("Android APP Dev", 42));
-intent.putExtras(bundle);
-
-startActivity(intent);
-  \end{javacode}
-  
-  接收端：\par
-  \begin{javacode}
-Intent intent = getIntent();
-Bundle bundle = intent.getExtras();
-Book book = (Book) bundle.getParcelable("book_info");
-book.print();
-  \end{javacode}
-  
-  Book类的定义：\par
-  \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{ParcableBook.java}
-
 \end{document}
