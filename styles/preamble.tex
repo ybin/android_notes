@@ -51,6 +51,11 @@
 \long\def\cmd#1{\par\vspace{1em}\hspace*{6ex}#1\vspace{1em}\par}
 \def\cstr#1{\texttt{\string#1}} % e.g. \cstr{\latex}
 \long\def\runcode#1{\par\bigskip#1\bigskip\par}
+% 我不想看到那么多的underful hbox，尤其是minted环境加上背景色之后
+\hbadness=10000
+% 适当放宽overful hbox的限制，运行2pt的溢出
+\hfuzz=2pt
+
 
 %%% change background color & add frame for enumerate enviroment
 \usepackage{mdframed}

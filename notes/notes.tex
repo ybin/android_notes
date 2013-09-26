@@ -432,7 +432,7 @@ book.print();
           Service执行代码必须是多线程的，而且要做到线程安全性。事实上，Messenger的
           底层正是AIDL。
   \end{coloredenumerate}
-  Bound Service将放到单独的notes条目中讲解。  
+  Bound Service将放到单独的notes条目\ref{sec:boundservice}中讲解。  
   
   \subsection[Service的生命周期]{Service的生命周期}
   \begin{figure}[ht]
@@ -449,7 +449,7 @@ book.print();
   \subsection[service默认运行在UI线程]{service默认运行在UI线程}
   这一点是如此重要，以至于用一个单独的subsection来记录它。
   
-  \section[Bound Service]{Bound Service}
+  \section[Bound Service]{Bound Service}\label{sec:boundservice}
   实现Bound Service的关键是：IBinder接口。
   \subsection[使用IBinder]{使用IBinder}
   \subsubsection[Service端代码]{Service端代码}
