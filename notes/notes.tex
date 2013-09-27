@@ -216,6 +216,10 @@ u0_a82    9981  1821  540268 71520 ffffffff 4006e25f S com.example.aidldemo
 u0_a82    9995  1821  512052 45268 ffffffff 4006e25f S com.example.aidldemo:Service
   \end{bashcode}
   
+  此时一个package中的组件会被安排到多个进程中执行，而如果不同进程中的组件都要用到preference，
+  则要在获取preference对象的时候使用Context.MULTI\_PROCESS标志，而非Context.PRIVATE标志，
+  否则通过process属性设置的组件无法获取到正确的preference对象。
+
   \subsection[exported属性]{exported属性}
   表明组件是否为私有组件，及外部组件是否可以调用该组件。
   \begin{description}
@@ -248,6 +252,15 @@ u0_a82    9995  1821  512052 45268 ffffffff 4006e25f S com.example.aidldemo:Serv
 
   \subsection[启动Service的桌面应用]{启动Service的桌面应用}
   \mint[bgcolor=srcbg]{java}|startService(new Intent(this, ReceiverService.class));|
+  
+  \section[通过Intent监听系统启动消息]{通过Intent监听系统启动消息}
+  知道系统何时启动有时是很重要的，比如系统启动之后立刻启动后台Service监听事件。
+  当Android系统启动完毕之后，会发送BOOT\_COMPLETE intent，通过在Receiver中监听该
+  intent即可：\par
+  \mint[bgcolor=srcbg]{xml}|<action android:name="android.intent.action.BOOT_COMPLETED"/>|
+  
+  不过这需求特殊的权限：\par
+  \mint[bgcolor=srcbg]{xml}|<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />|
 
 
   \section[如何在代码中设置View/ViewGroup的尺寸]{如何在代码中设置View/ViewGroup的尺寸}
@@ -385,7 +398,7 @@ book.print();
 
   \section[Service组件]{Service组件}
   Service --- Android四大组件之一。
-  
+
   \subsection[Service的分类]{Service的分类}
   Service分为两类：\par
   \begin{description}
@@ -394,7 +407,7 @@ book.print();
     \item[Bound Service:] 通过调用bindService()接口启动的Service。在工作完成时，调用者应该调用unBindService()
                           解除绑定。没有任何绑定时，Service将自行被系统销毁。
   \end{description}
-  
+
   \subsection[Service basic interface]{Service basic interface}
   \begin{coloredenumerate}
     \item onStartCommand(): 当调用startService()时，系统将会调用到该接口，它与Started Service对应。
@@ -402,7 +415,7 @@ book.print();
     \item onCreate(): Service生命周期的开始，无论哪种Service，启动时都会调用该接口。
     \item onDestroy(): Service生命周期的结束，无论哪种Service，结束时都会调用到该接口。
   \end{coloredenumerate}
-  
+
   由于started Service有可能无限期运行，所以系统资源紧张时会被kill掉，此时就需要onStartCommand()以返回值
   的形式告知系统，当Service被kill的时候，系统应该如何处理它。返回值有以下几种：\par
   \begin{coloredenumerate}
@@ -410,14 +423,14 @@ book.print();
     \item START\_STICKY: Service被kill之后重新启动它，但是不要传递最后一个Intent。
     \item START\_REDELIVER\_INTENT: Service被kill之后，重新启动它并传递最后一个Intent给它。
   \end{coloredenumerate}
-  
+
   \subsection[Started Service分类]{Started Service分类}
   Started Service分类两类：\par
   \begin{coloredenumerate}
     \item IntentService: 该类Service启动一个worker线程“逐个”、“顺序”处理所有的start请求。
     \item 直接继承Service类，一般用于启动多线程并发处理start请求的情况。
   \end{coloredenumerate}
-  
+
   \subsection[Bound Service分类]{Bound Service分类}
   Bound Service允许其他组件绑定到它上面并与之交互，该service必须实现onBind()函数，并返回
   一个IBinder对象，该对象是Client与Service交互的接口。多个Client可以同时绑定到Service上。
@@ -432,8 +445,8 @@ book.print();
           Service执行代码必须是多线程的，而且要做到线程安全性。事实上，Messenger的
           底层正是AIDL。
   \end{coloredenumerate}
-  Bound Service将放到单独的notes条目\ref{sec:boundservice}中讲解。  
-  
+  Bound Service将放到单独的notes条目\ref{sec:boundservice}中讲解。
+
   \subsection[Service的生命周期]{Service的生命周期}
   \begin{figure}[ht]
     \centering
@@ -441,23 +454,23 @@ book.print();
     \caption{Life cycle of Service}\label{fig:service}
   \end{figure}
   详细内容见图 \ref{fig:service}
-  
+
   \subsection[Service v.s. Thread]{Service v.s. Thread}
   如果想要在UI线程以外执行任务，并且该任务只在用户与应用程序交互的过程中执行，
   那么应该创建线程而非Service。
-  
+
   \subsection[service默认运行在UI线程]{service默认运行在UI线程}
   这一点是如此重要，以至于用一个单独的subsection来记录它。
-  
+
   \section[Bound Service]{Bound Service}\label{sec:boundservice}
   实现Bound Service的关键是：IBinder接口。
   \subsection[使用IBinder]{使用IBinder}
   \subsubsection[Service端代码]{Service端代码}
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{LocalService.java}
-  
+
   \subsubsection[Client端代码]{Client端代码}
   \inputminted[linenos,tabsize=4,bgcolor=srcbg]{java}{BindingActivity.java}
-  
+
   \subsection[使用Messenger]{使用Messenger}
   略。
 
@@ -500,5 +513,5 @@ parcelable Book;
   \begin{bashcode}
 D/ClientActivity(10184): book name: Android Notes, book price: 42
   \end{bashcode}
-  
+
 \end{document}
