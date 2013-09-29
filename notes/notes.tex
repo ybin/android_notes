@@ -185,6 +185,12 @@
 
   其中，WxH、density均为数值。
 
+  \section[获取系统属性列表]{获取系统属性列表}
+  \hspace*{2ex}命令：getprop\par\vspace{2ex}
+  该命令打印出当前系统属性(SystemProperties)列表，其中包括dalvik heapsize等。\par
+  如：[dalvik.vm.heapsize]: [256m]
+
+
   \part[Android Notes List]{Android笔记列表}
   \section[关于package的UID]{关于package的UID}
   在安装apk时，android为application分配一个uid，每个app一个uid，除非使用sharedUid。
@@ -215,7 +221,7 @@
 u0_a82    9981  1821  540268 71520 ffffffff 4006e25f S com.example.aidldemo
 u0_a82    9995  1821  512052 45268 ffffffff 4006e25f S com.example.aidldemo:Service
   \end{bashcode}
-  
+
   此时一个package中的组件会被安排到多个进程中执行，而如果不同进程中的组件都要用到preference，
   则要在获取preference对象的时候使用Context.MULTI\_PROCESS标志，而非Context.PRIVATE标志，
   否则通过process属性设置的组件无法获取到正确的preference对象。
@@ -252,13 +258,13 @@ u0_a82    9995  1821  512052 45268 ffffffff 4006e25f S com.example.aidldemo:Serv
 
   \subsection[启动Service的桌面应用]{启动Service的桌面应用}
   \mint[bgcolor=srcbg]{java}|startService(new Intent(this, ReceiverService.class));|
-  
+
   \section[通过Intent监听系统启动消息]{通过Intent监听系统启动消息}
   知道系统何时启动有时是很重要的，比如系统启动之后立刻启动后台Service监听事件。
   当Android系统启动完毕之后，会发送BOOT\_COMPLETE intent，通过在Receiver中监听该
   intent即可：\par
   \mint[bgcolor=srcbg]{xml}|<action android:name="android.intent.action.BOOT_COMPLETED"/>|
-  
+
   不过这需求特殊的权限：\par
   \mint[bgcolor=srcbg]{xml}|<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />|
 
