@@ -189,6 +189,42 @@
   \hspace*{2ex}命令：getprop\par\vspace{2ex}
   该命令打印出当前系统属性(SystemProperties)列表，其中包括dalvik heapsize等。\par
   如：[dalvik.vm.heapsize]: [256m]
+  
+  \section[Android上的top命令]{Android上的top命令}
+  相比于Linux，top命令在android上被大大简化了。
+  \cmd{top [-m max\_procs] [-n iterations] [-d delay] [-s sort\_column] [-t] [-h]}
+  \begin{coloredenumerate}
+    \item -m max\_procs: 最多显示max\_procs个进程信息(默认显示所有进程信息)
+    \item -n iterations: 刷新iterations次就退出(默认一直刷新)
+    \item -d delay: 两次刷新之间的时间间隔(单位是秒)
+    \item -s sort\_column: 按照哪一行进行排序，可选项为：cpu,vss,rss,thr
+    \item -t: 显示线程号而非进程号
+    \item -h: 打印帮助信息
+  \end{coloredenumerate}
+  输出信息解释：
+  
+  \begin{center}
+  \begin{tabular}{llllllllll}
+    PID & PR & CPU\% & S & \#THR & VSS & RSS & PCY & UID & Name\\ \hline
+    4145 & 3 & 0\% & S & 14 & 549400K & 89172K & bg & u0\_a11 & zte.com.cn.camera
+  \end{tabular}
+  \end{center}
+  \begin{coloredenumerate}
+    \item PID: 进程号
+    \item PR: Priority，进程优先级(数字越小，优先级越高)
+    \item CPU\%: 进程占用CPU的百分比
+    \item S: Status，进程状态：R(run)、S(sleep)、Z(zombie)
+    \item \#THR: 进程当前使用的线程数量
+    \item VSS: Virtual Set Size 虚拟耗用内存(包含共享库占用的内存)
+    \item RSS: Resident Set Size 实际使用物理内存(包含共享库占用的内存)
+    \item PCY: 进程前台/后台运行(bg/fg)，对应的单词不清楚
+    \item UID: user id
+    \item Name: 进程名称，在Linux上为启动进程的命令
+  \end{coloredenumerate}
+  注意：VSS、RSS中的"K"表示kilo bits而非kilo bytes。\par
+  示例：
+  \cmd{adb shell top -d 5 -s rss -m 10 -n 3}
+  每隔5s显示一次系统内存占用量最多的10个进程，总共显示3次。
 
 
   \part[Android Notes List]{Android笔记列表}
